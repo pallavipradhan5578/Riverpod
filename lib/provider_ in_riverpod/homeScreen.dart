@@ -67,49 +67,106 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }*/
 
-final counter = StateProvider<int>((ref) {
-  return 0;
-});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Counter App with Riverpod',
+      home: HomeScreen(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+    );
+  }
+}
+
+// Riverpod provider for counter state
+final counter = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("Build");
+    final count = ref.watch(counter);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Counter App"),
+        title: const Text(
+          "Counter App",
+          style: TextStyle(fontSize: 24),
+        ),
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Consumer(builder: (context, ref, child) {
-            final count = ref.watch(counter);
-            print('build2');
-            return Center(
-              child: Text(
-                count.toString(),
-                style: TextStyle(fontSize: 50),
-              ),
-            );
-          }),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Counter Value",
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              count.toString(),
+              style: TextStyle(fontSize: 50, color: Colors.blueAccent),
+            ),
+            SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
                   onPressed: () {
                     ref.read(counter.notifier).state++;
                   },
-                  child: Text("+")),
-              SizedBox(width: 30,),
-              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.greenAccent,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "+",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+                SizedBox(width: 30),
+                ElevatedButton(
                   onPressed: () {
                     ref.read(counter.notifier).state--;
                   },
-                  child: Text("-"))
-            ],
-          )
-        ],
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 25, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    "-",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
+            Text(
+              "Press the buttons to increase or decrease the count.",
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
