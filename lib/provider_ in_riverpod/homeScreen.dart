@@ -88,7 +88,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Riverpod provider for counter state
 final counter = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerWidget {
